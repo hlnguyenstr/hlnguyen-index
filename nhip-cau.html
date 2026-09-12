@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Nhịp Cầu</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EFF3F1;
+    --bg-hero:#E7EEEC;
+    --surface:#FFFFFF;
+    --surface-2:#F4F7F6;
+    --line:#C7D1CE;
+    --line-strong:#9FADA9;
+    --ink:#17222A;
+    --ink-soft:#48555E;
+    --muted:#6E7A80;
+    --blue:#1D4E89;
+    --blue-ink:#123A69;
+    --blue-soft:#E4ECF5;
+    --rust:#A85426;
+    --rust-soft:#F3E4D8;
+    --focus:#1D4E89;
+    --shadow: 0 1px 2px rgba(23,34,42,0.06), 0 8px 24px rgba(23,34,42,0.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#101720;
+      --bg-hero:#0C1319;
+      --surface:#161F29;
+      --surface-2:#131A22;
+      --line:#2A3742;
+      --line-strong:#3C4B57;
+      --ink:#E7ECEC;
+      --ink-soft:#B8C4C6;
+      --muted:#8A969B;
+      --blue:#6FA0D6;
+      --blue-ink:#BFD6EE;
+      --blue-soft:#1B2C3E;
+      --rust:#DB9865;
+      --rust-soft:#33261C;
+      --focus:#6FA0D6;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 28px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#101720;
+    --bg-hero:#0C1319;
+    --surface:#161F29;
+    --surface-2:#131A22;
+    --line:#2A3742;
+    --line-strong:#3C4B57;
+    --ink:#E7ECEC;
+    --ink-soft:#B8C4C6;
+    --muted:#8A969B;
+    --blue:#6FA0D6;
+    --blue-ink:#BFD6EE;
+    --blue-soft:#1B2C3E;
+    --rust:#DB9865;
+    --rust-soft:#33261C;
+    --focus:#6FA0D6;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 28px rgba(0,0,0,0.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Source Serif 4", Georgia, "Times New Roman", serif;
+    font-size:17px;
+    line-height:1.6;
+    padding-inline:20px;
+  }
+  ::selection{ background:var(--blue-soft); color:var(--blue-ink); }
+  a{ color:var(--blue); }
+  h1,h2,h3,h4{
+    font-family:"Big Shoulders Display", "Arial Narrow", sans-serif;
+    font-weight:800;
+    letter-spacing:0.01em;
+    text-wrap:balance;
+    color:var(--ink);
+    margin:0;
+  }
+  .mono{ font-family:"IBM Plex Mono", ui-monospace, Menlo, monospace; }
+  .wrap{ max-width:1080px; margin-inline:auto; }
+  .eyebrow{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--blue);
+    font-weight:600;
+  }
+  :focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+
+  /* ---------- Header ---------- */
+  header.site{
+    max-width:1080px;
+    margin-inline:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding-block:22px;
+    flex-wrap:wrap;
+  }
+  .brand{ display:flex; align-items:baseline; gap:10px; }
+  .brand-mark{
+    font-family:"Big Shoulders Display", sans-serif;
+    font-weight:900;
+    font-size:1.55rem;
+    letter-spacing:0.01em;
+  }
+  .brand-mark .beat{ color:var(--rust); }
+  .brand-tag{ font-family:"IBM Plex Mono",monospace; font-size:0.72rem; color:var(--muted); letter-spacing:0.04em;}
+  nav.site-nav{ display:flex; gap:22px; flex-wrap:wrap; }
+  nav.site-nav a{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.8rem;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    text-decoration:none;
+    border-bottom:2px solid transparent;
+    padding-bottom:2px;
+  }
+  nav.site-nav a:hover{ color:var(--blue); border-color:var(--blue); }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 27px, var(--line) 28px),
+      repeating-linear-gradient(90deg, transparent, transparent 27px, var(--line) 28px),
+      var(--bg-hero);
+    background-blend-mode:normal;
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:44px clamp(18px,4vw,48px) 30px;
+    max-width:1080px;
+    margin:6px auto 40px;
+    opacity:0.999; /* helps grid render crisp in some engines */
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1.1fr 1fr;
+    gap:36px;
+    align-items:center;
+  }
+  @media (max-width:820px){ .hero-grid{ grid-template-columns:1fr; } }
+  .hero h1{
+    font-size:clamp(2.2rem, 5vw, 3.4rem);
+    line-height:0.98;
+    margin-block:10px 14px;
+  }
+  .hero p.lede{
+    font-size:1.08rem;
+    color:var(--ink-soft);
+    max-width:46ch;
+    margin:0;
+  }
+  .hero-cta{ display:flex; gap:14px; margin-top:24px; flex-wrap:wrap; }
+  .btn{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.82rem;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    text-decoration:none;
+    padding:11px 18px;
+    border-radius:2px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    border:1px solid var(--line-strong);
+  }
+  .btn.primary{ background:var(--blue); color:#fff; border-color:var(--blue); }
+  .btn.ghost{ color:var(--ink); background:transparent; }
+  .btn.primary:hover{ background:var(--blue-ink); }
+  .btn.ghost:hover{ border-color:var(--blue); color:var(--blue); }
+
+  .diagram-cap{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:0.68rem;
+    color:var(--muted);
+    text-align:center;
+    letter-spacing:0.04em;
+    margin-top:2px;
+  }
+  svg.bridge{ width:100%; height:auto; color:var(--ink-soft); }
+  svg.bridge .deck{ stroke:var(--ink); stroke-width:4; fill:none; }
+  svg.bridge .pylon{ stroke:var(--ink); stroke-width:4; fill:none; }
+  svg.bridge .cable{ stroke:var(--blue); stroke-width:1.4; opacity:0.85;}
+  svg.bridge .dim{ stroke:var(--muted); stroke-width:1; fill:none; }
+  svg.bridge .dimtext{ font-family:"IBM Plex Mono",monospace; font-size:11px; fill:var(--muted); }
+  svg.bridge .water{ stroke:var(--line-strong); stroke-width:1.5; fill:none; }
+
+  /* ---------- Stats row ---------- */
+  .stats{
+    max-width:1080px; margin:0 auto 56px;
+    display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+    background:var(--line); border:1px solid var(--line); border-radius:4px; overflow:hidden;
+  }
+  @media (max-width:720px){ .stats{ grid-template-columns:repeat(2,1fr); } }
+  .stat{ background:var(--surface); padding:20px 18px; }
+  .stat .num{ font-family:"Big Shoulders Display",sans-serif; font-weight:800; font-size:2rem; color:var(--blue); line-height:1;}
+  .stat .lbl{ font-family:"IBM Plex Mono",monospace; font-size:0.74rem; color:var(--muted); margin-top:6px; letter-spacing:0.02em;}
+
+  /* ---------- Section headings ---------- */
+  section{ max-width:1080px; margin-inline:auto; margin-bottom:64px; }
+  .sec-head{ margin-bottom:26px; max-width:60ch; }
+  .sec-head h2{ font-size:clamp(1.6rem,3.4vw,2.2rem); margin-top:6px; }
+  .sec-head p{ color:var(--ink-soft); margin-top:10px; }
+
+  /* ---------- Curriculum / tracks ---------- */
+  .track{
+    border:1px solid var(--line);
+    border-radius:4px;
+    margin-bottom:22px;
+    background:var(--surface);
+    box-shadow:var(--shadow);
+  }
+  .track-head{
+    display:flex; align-items:flex-start; gap:16px;
+    padding:20px 22px 16px;
+    border-bottom:1px solid var(--line);
+  }
+  .track-code{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:0.72rem;
+    color:#fff;
+    background:var(--rust);
+    padding:4px 8px;
+    border-radius:2px;
+    white-space:nowrap;
+    margin-top:4px;
+  }
+  .track-head h3{ font-size:1.4rem; }
+  .track-head .track-intro{ color:var(--ink-soft); font-size:0.95rem; margin-top:6px; max-width:65ch; }
+  .modules{ padding:6px 0; }
+
+  details.module{ border-bottom:1px solid var(--line); }
+  details.module:last-child{ border-bottom:none; }
+  details.module summary{
+    list-style:none;
+    cursor:pointer;
+    padding:14px 22px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  details.module summary::-webkit-details-marker{ display:none; }
+  details.module summary::before{
+    content:"+";
+    font-family:"IBM Plex Mono",monospace;
+    font-weight:600;
+    color:var(--blue);
+    width:1em;
+    flex:none;
+  }
+  details.module[open] summary::before{ content:"–"; }
+  details.module summary:hover{ background:var(--surface-2); }
+  .mod-code{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:0.76rem;
+    color:var(--blue);
+    flex:none;
+  }
+  .mod-title{ font-weight:600; flex:1 1 260px; }
+  .mod-meta{ font-family:"IBM Plex Mono",monospace; font-size:0.72rem; color:var(--muted); flex:none; }
+
+  .lessons{ padding:0 22px 18px 58px; }
+  .lesson{ padding:14px 0; border-top:1px solid var(--line); }
+  .lesson:first-child{ border-top:none; }
+  .lesson-head{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .lesson-tag{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:0.65rem;
+    letter-spacing:0.04em;
+    padding:2px 7px;
+    border-radius:2px;
+    background:var(--blue-soft);
+    color:var(--blue-ink);
+    flex:none;
+  }
+  .lesson-tag.soon{ background:var(--surface-2); color:var(--muted); border:1px solid var(--line); }
+  .lesson h4{ font-size:1.02rem; font-family:"Source Serif 4",serif; font-weight:700; }
+  .lesson.placeholder h4{ color:var(--ink-soft); }
+  .lesson-body{ margin-top:10px; color:var(--ink-soft); font-size:0.96rem; }
+  .lesson-body p{ margin:0 0 8px; }
+  .lesson-body strong{ color:var(--ink); }
+  .lesson-note{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:0.72rem;
+    color:var(--muted);
+    border-top:1px dashed var(--line-strong);
+    padding-top:8px;
+    margin-top:10px !important;
+  }
+
+  /* ---------- Learning path ---------- */
+  .path{ display:grid; grid-template-columns:repeat(3,1fr); gap:0; position:relative; }
+  @media (max-width:760px){ .path{ grid-template-columns:1fr; } }
+  .path::before{
+    content:"";
+    position:absolute; left:0; right:0; top:34px;
+    height:1px; background:var(--line-strong);
+  }
+  @media (max-width:760px){ .path::before{ display:none; } }
+  .stage{ position:relative; padding:0 18px 0 0; }
+  .stage .stage-num{
+    width:68px; height:68px; border-radius:50%;
+    background:var(--surface); border:2px solid var(--blue);
+    display:flex; align-items:center; justify-content:center;
+    font-family:"Big Shoulders Display",sans-serif; font-weight:800; font-size:1.5rem; color:var(--blue);
+    position:relative; z-index:1;
+  }
+  .stage h4{ font-size:1.15rem; margin-top:16px; }
+  .stage p{ color:var(--ink-soft); font-size:0.94rem; margin-top:6px; max-width:32ch; }
+
+  /* ---------- About ---------- */
+  .about{
+    display:grid; grid-template-columns:1fr 1fr; gap:36px;
+    background:var(--surface); border:1px solid var(--line); border-radius:4px;
+    padding:clamp(20px,4vw,40px);
+    box-shadow:var(--shadow);
+  }
+  @media (max-width:760px){ .about{ grid-template-columns:1fr; } }
+  .about blockquote{ margin:0; font-size:1.15rem; font-style:italic; color:var(--ink); border-left:3px solid var(--rust); padding-left:16px; }
+  .about .who{ margin-top:16px; font-family:"IBM Plex Mono",monospace; font-size:0.78rem; color:var(--muted); }
+  .about .note-box{
+    background:var(--surface-2); border:1px solid var(--line); border-radius:4px;
+    padding:16px 18px; font-size:0.9rem; color:var(--ink-soft);
+  }
+  .about .note-box strong{ color:var(--ink); }
+  .standards{ display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  .standards span{
+    font-family:"IBM Plex Mono",monospace; font-size:0.7rem;
+    border:1px solid var(--line-strong); border-radius:2px;
+    padding:3px 8px; color:var(--ink-soft);
+  }
+
+  /* ---------- Footer ---------- */
+  footer{
+    max-width:1080px; margin:0 auto 40px;
+    border-top:1px solid var(--line);
+    padding-top:22px;
+    display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;
+  }
+  footer .disclaimer{ font-size:0.82rem; color:var(--muted); max-width:62ch; }
+  footer .fmark{ font-family:"IBM Plex Mono",monospace; font-size:0.75rem; color:var(--muted); white-space:nowrap; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="brand">
+    <span class="brand-mark">NHỊP<span class="beat">·</span>CẦU</span>
+    <span class="brand-tag">/ học viện thiết kế kết cấu cầu</span>
+  </div>
+  <nav class="site-nav">
+    <a href="#curriculum">Chương trình học</a>
+    <a href="#path">Lộ trình</a>
+    <a href="#about">Giới thiệu</a>
+  </nav>
+</header>
+
+<div class="wrap">
+  <section class="hero" style="margin-bottom:0;">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">Chia sẻ kiến thức &nbsp;·&nbsp; Kỹ thuật cầu</p>
+        <h1>Học thiết kế<br>kết cấu cầu<br>từ gốc.</h1>
+        <p class="lede">Nơi hệ thống hoá kinh nghiệm thiết kế cầu — từ nguyên lý tải trọng, các dạng kết cấu, quy trình thực tế đến phần mềm phân tích — dành cho kỹ sư trẻ và sinh viên ngành cầu đường.</p>
+        <div class="hero-cta">
+          <a class="btn primary" href="#curriculum">Vào chương trình học →</a>
+          <a class="btn ghost" href="#about">Về người biên soạn</a>
+        </div>
+      </div>
+      <div>
+        <svg class="bridge" viewBox="0 0 620 260" role="img" aria-label="Sơ đồ minh hoạ cầu dây văng ba nhịp">
+          <line class="water" x1="10" y1="188" x2="610" y2="188" stroke-dasharray="2 5"/>
+          <line class="deck" x1="30" y1="150" x2="590" y2="150"/>
+          <line class="pylon" x1="175" y1="150" x2="175" y2="28"/>
+          <line class="pylon" x1="445" y1="150" x2="445" y2="28"/>
+          <line class="pylon" x1="175" y1="150" x2="175" y2="182"/>
+          <line class="pylon" x1="445" y1="150" x2="445" y2="182"/>
+          <g class="cable">
+            <line x1="175" y1="34" x2="60" y2="150"/>
+            <line x1="175" y1="34" x2="100" y2="150"/>
+            <line x1="175" y1="34" x2="140" y2="150"/>
+            <line x1="175" y1="34" x2="180" y2="150"/>
+            <line x1="175" y1="34" x2="255" y2="150"/>
+            <line x1="175" y1="34" x2="300" y2="150"/>
+            <line x1="445" y1="34" x2="365" y2="150"/>
+            <line x1="445" y1="34" x2="410" y2="150"/>
+            <line x1="445" y1="34" x2="440" y2="150"/>
+            <line x1="445" y1="34" x2="480" y2="150"/>
+            <line x1="445" y1="34" x2="520" y2="150"/>
+            <line x1="445" y1="34" x2="560" y2="150"/>
+          </g>
+          <g class="dim">
+            <line x1="30" y1="210" x2="175" y2="210"/>
+            <line x1="175" y1="210" x2="445" y2="210"/>
+            <line x1="445" y1="210" x2="590" y2="210"/>
+            <line x1="30" y1="204" x2="30" y2="216"/>
+            <line x1="175" y1="204" x2="175" y2="216"/>
+            <line x1="445" y1="204" x2="445" y2="216"/>
+            <line x1="590" y1="204" x2="590" y2="216"/>
+          </g>
+          <text class="dimtext" x="102" y="228" text-anchor="middle">110 m</text>
+          <text class="dimtext" x="310" y="228" text-anchor="middle">300 m</text>
+          <text class="dimtext" x="518" y="228" text-anchor="middle">110 m</text>
+        </svg>
+        <p class="diagram-cap">SƠ ĐỒ NHỊP — CẦU DÂY VĂNG (minh hoạ, không theo tỉ lệ)</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="num">04</div><div class="lbl">MẢNG KIẾN THỨC CHÍNH</div></div>
+  <div class="stat"><div class="num">3</div><div class="lbl">CẤP ĐỘ HỌC — NỀN TẢNG → THỰC CHIẾN</div></div>
+  <div class="stat"><div class="num mono">TCVN·EC·AASHTO</div><div class="lbl">TIÊU CHUẨN THAM CHIẾU</div></div>
+  <div class="stat"><div class="num">Đang xây dựng</div><div class="lbl">TÌNH TRẠNG NỘI DUNG</div></div>
+</div>
+
+<section id="curriculum">
+  <div class="sec-head">
+    <p class="eyebrow">Chương trình học</p>
+    <h2>Bốn mảng kiến thức cốt lõi</h2>
+    <p>Mỗi mảng gồm các module chuyên đề. Một số bài học mẫu đã có nội dung đầy đủ để tham khảo cách trình bày; phần còn lại sẽ được cập nhật dần.</p>
+  </div>
+
+  <div class="track" data-track="1">
+    <div class="track-head">
+      <span class="track-code">TRACK 01</span>
+      <div>
+        <h3>Nguyên lý &amp; Tiêu chuẩn thiết kế</h3>
+        <p class="track-intro">Tải trọng, tổ hợp tải trọng, trạng thái giới hạn và các hệ tiêu chuẩn đang áp dụng cho công trình cầu tại Việt Nam.</p>
+      </div>
+    </div>
+    <div class="modules">
+      <details class="module" open>
+        <summary>
+          <span class="mod-code">M1.1</span>
+          <span class="mod-title">Tải trọng thiết kế cầu ô tô theo TCVN 11823:2017</span>
+          <span class="mod-meta">3 bài học</span>
+        </summary>
+        <div class="lessons">
+          <div class="lesson sample">
+            <div class="lesson-head">
+              <span class="lesson-tag">BÀI MẪU</span>
+              <h4>Tổ hợp tải trọng: Cường độ, Sử dụng, Đặc biệt</h4>
+            </div>
+            <div class="lesson-body">
+              <p><strong>Vấn đề:</strong> Khi thiết kế mặt cắt dầm chủ, cần xác định tổ hợp tải trọng nào chi phối — nhiều kỹ sư mới chỉ kiểm tra tổ hợp Cường độ I mà bỏ qua Sử dụng hoặc Đặc biệt, dẫn đến kết cấu đạt yêu cầu về khả năng chịu lực nhưng nứt/võng vượt giới hạn khai thác.</p>
+              <p><strong>Phân tích:</strong> TCVN 11823-3:2017 quy định 4 nhóm trạng thái giới hạn: Cường độ (Strength I–V), Sử dụng (Service I–IV), Đặc biệt (Extreme Event I–II) và Mỏi (Fatigue). Mỗi tổ hợp dùng hệ số tải trọng γ khác nhau cho tĩnh tải, hoạt tải HL-93, gió, động đất... Cường độ I (1.25DC + 1.75LL) thường chi phối thiết kế thép chủ, nhưng Service I (1.0DC + 1.0LL) lại chi phối kiểm tra nứt và độ võng của dầm BTCT DƯL.</p>
+              <p><strong>Khuyến nghị:</strong> Luôn kiểm tra song song tối thiểu Strength I, Service I và Fatigue I ngay từ bước tính sơ bộ, không chỉ ở bước kiểm toán cuối. Với cầu vượt sông có nguy cơ va tàu/xe, bổ sung Extreme Event II.</p>
+              <p class="lesson-note">Giả định: cầu dầm liên tục BTCT DƯL, khẩu độ nhịp trung bình. Tiêu chuẩn áp dụng: TCVN 11823-3:2017, Điều 3.4.1, Bảng 3.4.1-1 (cần đối chiếu bản hiệu lực mới nhất trước khi dùng chính thức).</p>
+            </div>
+          </div>
+          <div class="lesson placeholder">
+            <div class="lesson-head"><span class="lesson-tag soon">SẮP RA MẮT</span><h4>Hoạt tải HL-93 và hệ số phân bố ngang</h4></div>
+          </div>
+          <div class="lesson placeholder">
+            <div class="lesson-head"><span class="lesson-tag soon">SẮP RA MẮT</span><h4>Tải trọng gió và động đất theo TCVN 11823-3, -13</h4></div>
+          </div>
+        </div>
+      </details>
+      <details class="module">
+        <summary>
+          <span class="mod-code">M1.2</span>
+          <span class="mod-title">Đối chiếu TCVN 11823 – AASHTO LRFD – Eurocode EN 1991-2</span>
+          <span class="mod-meta">2 bài học</span>
+        </summary>
+        <div class="lessons">
+          <div class="lesson placeholder"><div class="lesson-head"><span class="lesson-tag soon">SẮP RA MẮT</span><h4>Khác biệt về hệ số tải trọng và mô hình hoạt tải</h4></div></div>
+          <div class="lesson placeholder"><div class="lesson-head"><span class="lesson-tag soon">SẮP RA MẮT</span><h4>Khi nào dự án yêu cầu áp dụng Eurocode song song TCVN</h4></div></div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div class="track" data-track="2">
+    <div class="track-head">
+      <span class="track-code">TRACK 02</span>
+      <div>
+        <h3>Các dạng kết cấu cầu</h3>
+        <p class="track-intro">Nguyên lý làm việc, phạm vi khẩu độ hợp lý và đặc điểm cấu tạo của từng hệ kết cấu.</p>
+      </div>
+    </div>
+    <div class="modules">
+      <details class="module">
+        <summary><span class="mod-code">M2.1</span><span class="mod-title">Cầu dầm — giản đơn, liên tục, dầm hộp BTCT DƯL</span><span class="mod-meta">3 bài học</span></summary>
+        <div class="lessons">
+          <div class="lesson placeholder"><div class="lesson-head"><span class="lesson-tag soon">SẮP RA MẮT</span><h4>Phạm vi khẩu độ hợp lý theo từng loại mặt cắt dầm</h4></div></div>
+          <div class="lesson placeholder"><div class="lesson-head"><span class="lesson-tag soon">SẮP RA MẮT</span><h4>Dầm liên tục và bài toán mất mát ứng suất trước</h4></div></div>
+          <div class="lesson placeholder"><div class="lesson-head"><span class="lesson-tag soon">SẮP RA MẮT</span><h4>Dầm hộp đúc hẫng cân bằng — trình tự thi công</h4></div></div>
+        </div>
+      </details>
+      <details class="module">
+        <summary><span class="mod-code">M2.2</span><span class="mod-title">Cầu dây văng (cable-stayed)</span><span class="mod-meta">2 bài học</span></summary>
+        <div class="lessons">
+          <div class="lesson sample">
+            <div class="lesson-head"><span class="lesson-tag">BÀI MẪU</span><h4>Bố trí hệ dây và lựa chọn sơ đồ tháp cầu</h4></div>
+            <div class="lesson-body">
+              <p><strong>Vấn đề:</strong> Với nhịp chính trên 250 m, cần chọn sơ đồ dây (rẻ quạt/song song/hỗn hợp) và hình dạng tháp (chữ H, chữ A, kim cương) sao cho vừa đảm bảo độ cứng ngang, vừa tối ưu chi phí vật liệu dây văng.</p>
+              <p><strong>Phân tích:</strong> Sơ đồ dây rẻ quạt cho hiệu quả chịu lực tốt hơn (góc neo dây lớn, giảm lực dọc trong dầm) nhưng cấu tạo neo tại đỉnh tháp phức tạp hơn dạng song song. Tháp hình chữ A/kim cương tăng độ cứng xoắn, phù hợp cầu có bản mặt cầu rộng hoặc chịu tải gió lớn; tháp đơn trụ (single pylon) phù hợp cầu hẹp, yêu cầu kiến trúc thanh mảnh.</p>
+              <p><strong>Khuyến nghị:</strong> Với cầu vượt sông có yêu cầu tĩnh không thông thuyền lớn và gió mạnh (vùng ven biển), ưu tiên tháp chữ H hoặc kim cương kết hợp sơ đồ dây rẻ quạt cải biên (modified fan), đồng thời phân tích ổn định khí động ngay từ bước thiết kế cơ sở.</p>
+              <p class="lesson-note">Giả định: cầu ô tô 4 làn xe, nhịp chính 300 m, chưa xét tải trọng thi công phân đoạn. Tham khảo: TCVN 11823-1:2017 (nguyên tắc chung); cần bổ sung kiểm tra khí động học theo hướng dẫn chuyên ngành hiện hành.</p>
+            </div>
+          </div>
+          <div class="lesson placeholder"><div class="lesson-head"><span class="lesson-tag soon">SẮP RA MẮT</span><h4>Kiểm soát nội lực dây trong quá trình căng chỉnh</h4></div></div>
+        </div>
+      </details>
+      <details class="module">
+        <summary><span class="mod-code">M2.3</span><span class="mod-title">Cầu treo (suspension) &amp; cầu vòm (arch)</span><span class="mod-meta">2 bài học</span></summary>
+        <div class="lessons">
+          <div class="lesson placeholder"><div class="lesson-head"><span class="lesson-tag soon">SẮP RA MẮT</span><h4>Cầu treo dây võng — hệ cáp chủ và dây treo</h4></div></div>
+          <div class="lesson placeholder"><div class="lesson-head"><span class="lesson-tag soon">SẮP RA MẮT</span><h4>Cầu vòm — vòm chịu nén và bài toán ổn định</h4></div></div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div class="track" data-track="3">
+    <div class="track-head">
+      <span class="track-code">TRACK 03</span>
+      <div>
+        <h3>Quy trình &amp; kinh nghiệm thực tế</h3>
+        <p class="track-intro">Trình tự triển khai một dự án cầu, checklist kiểm tra hồ sơ và bài học từ thực tế thi công.</p>
+      </div>
+    </div>
+    <div class="modules">
+      <details class="module">
+        <summary><span class="mod-code">M3.1</span><span class="mod-title">Quy trình thiết kế — từ báo cáo NCKT đến bản vẽ thi công</span><span class="mod-meta">3 bài học</span></summary>
+        <div class="lessons">
+          <div class="lesson placeholder"><div class="lesson-head"><span class="lesson-tag soon">SẮP RA MẮT</span><h4>Các bước lập dự án theo quy định đầu tư xây dựng</h4></div></div>
+          <div class="lesson placeholder"><div class="lesson-head"><span class="lesson-tag soon">SẮP RA MẮT</span><h4>Thiết kế cơ sở → thiết kế kỹ thuật → bản vẽ thi công</h4></div></div>
+          <div class="lesson placeholder"><div class="lesson-head"><span class="lesson-tag soon">SẮP RA MẮT</span><h4>Phối hợp hồ sơ địa kỹ thuật — kết cấu — thi công</h4></div></div>
+        </div>
+      </details>
+      <details class="module">
+        <summary><span class="mod-code">M3.2</span><span class="mod-title">Checklist kiểm tra hồ sơ thiết kế cầu</span><span class="mod-meta">2 bài học</span></summary>
+        <div class="lessons">
+          <div class="lesson placeholder"><div class="lesson-head"><span class="lesson-tag soon">SẮP RA MẮT</span><h4>Checklist kiểm tra nội lực, tổ hợp tải trọng trước khi phát hành</h4></div></div>
+          <div class="lesson placeholder"><div class="lesson-head"><span class="lesson-tag soon">SẮP RA MẮT</span><h4>Rà soát tương thích giữa mô hình tính và bản vẽ</h4></div></div>
+        </div>
+      </details>
+      <details class="module">
+        <summary><span class="mod-code">M3.3</span><span class="mod-title">Bài học từ sự cố &amp; lỗi thường gặp</span><span class="mod-meta">2 bài học</span></summary>
+        <div class="lessons">
+          <div class="lesson placeholder"><div class="lesson-head"><span class="lesson-tag soon">SẮP RA MẮT</span><h4>Lỗi mô hình hoá gối cầu và ảnh hưởng đến nội lực</h4></div></div>
+          <div class="lesson placeholder"><div class="lesson-head"><span class="lesson-tag soon">SẮP RA MẮT</span><h4>Sự cố liên quan đến giai đoạn thi công phân đoạn</h4></div></div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div class="track" data-track="4">
+    <div class="track-head">
+      <span class="track-code">TRACK 04</span>
+      <div>
+        <h3>Công cụ &amp; phần mềm tính toán</h3>
+        <p class="track-intro">Hướng dẫn thực hành mô hình hoá và phân tích kết cấu cầu bằng các phần mềm chuyên dụng.</p>
+      </div>
+    </div>
+    <div class="modules">
+      <details class="module">
+        <summary><span class="mod-code">M4.1</span><span class="mod-title">Midas Civil — mô hình hoá cầu dầm liên tục</span><span class="mod-meta">2 bài học</span></summary>
+        <div class="lessons">
+          <div class="lesson placeholder"><div class="lesson-head"><span class="lesson-tag soon">SẮP RA MẮT</span><h4>Thiết lập mô hình, khai báo mặt cắt và giai đoạn thi công</h4></div></div>
+          <div class="lesson placeholder"><div class="lesson-head"><span class="lesson-tag soon">SẮP RA MẮT</span><h4>Khai báo cáp dự ứng lực và mất mát ứng suất tự động</h4></div></div>
+        </div>
+      </details>
+      <details class="module">
+        <summary><span class="mod-code">M4.2</span><span class="mod-title">SAP2000 / CSI Bridge — phân tích hoạt tải di động</span><span class="mod-meta">2 bài học</span></summary>
+        <div class="lessons">
+          <div class="lesson placeholder"><div class="lesson-head"><span class="lesson-tag soon">SẮP RA MẮT</span><h4>Thiết lập Bridge Wizard và làn xe di động (moving load)</h4></div></div>
+          <div class="lesson placeholder"><div class="lesson-head"><span class="lesson-tag soon">SẮP RA MẮT</span><h4>Trích xuất bao nội lực theo tổ hợp tải trọng</h4></div></div>
+        </div>
+      </details>
+      <details class="module">
+        <summary><span class="mod-code">M4.3</span><span class="mod-title">RM Bridge — phân tích thi công phân đoạn</span><span class="mod-meta">1 bài học</span></summary>
+        <div class="lessons">
+          <div class="lesson placeholder"><div class="lesson-head"><span class="lesson-tag soon">SẮP RA MẮT</span><h4>Mô phỏng trình tự đúc hẫng và hợp long</h4></div></div>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section id="path">
+  <div class="sec-head">
+    <p class="eyebrow">Lộ trình học</p>
+    <h2>Ba cấp độ, đi từ nguyên lý đến hiện trường</h2>
+  </div>
+  <div class="path">
+    <div class="stage">
+      <div class="stage-num">01</div>
+      <h4>Nền tảng</h4>
+      <p>Nắm vững tải trọng, tổ hợp tải trọng và nguyên lý làm việc của các dạng kết cấu cầu phổ biến.</p>
+    </div>
+    <div class="stage">
+      <div class="stage-num">02</div>
+      <h4>Chuyên sâu</h4>
+      <p>Thực hành mô hình hoá trên phần mềm, phân tích giai đoạn thi công và các bài toán kỹ thuật đặc thù.</p>
+    </div>
+    <div class="stage">
+      <div class="stage-num">03</div>
+      <h4>Thực chiến</h4>
+      <p>Áp dụng quy trình thiết kế thực tế, đọc hiểu checklist và rút kinh nghiệm từ các sự cố công trình.</p>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="about">
+    <div>
+      <p class="eyebrow">Giới thiệu</p>
+      <h2 style="font-size:1.6rem;margin-top:6px;">Về Nhịp Cầu</h2>
+      <blockquote>“Một cây cầu tốt bắt đầu từ một kỹ sư hiểu rõ vì sao mỗi con số trong hồ sơ tính toán lại có mặt ở đó.”</blockquote>
+      <p class="who">Biên soạn bởi kỹ sư thiết kế kết cấu cầu — Pontech</p>
+      <div class="standards">
+        <span>TCVN 11823:2017</span><span>22TCN 272-05</span><span>EN 1991-2</span><span>EN 1992-2</span><span>EN 1993-2</span><span>AASHTO LRFD</span>
+      </div>
+    </div>
+    <div class="note-box">
+      <p><strong>Tình trạng nội dung:</strong> Trang đang trong giai đoạn xây dựng khung chương trình. Các bài học đánh dấu "Bài mẫu" đã có nội dung minh hoạ đầy đủ; phần còn lại sẽ được cập nhật dần theo thời gian.</p>
+      <p style="margin-top:10px;"><strong>Lưu ý chuyên môn:</strong> Nội dung mang tính chất chia sẻ kiến thức, tham khảo các tiêu chuẩn hiện hành tại thời điểm biên soạn. Không thay thế hồ sơ thiết kế đã được kỹ sư có chứng chỉ hành nghề thẩm tra và phê duyệt.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p class="disclaimer">© Nhịp Cầu — không gian chia sẻ kiến thức thiết kế kết cấu cầu. Nội dung tham khảo, cần đối chiếu với văn bản tiêu chuẩn hiệu lực và ý kiến chuyên gia trước khi áp dụng vào công trình thực tế.</p>
+  <p class="fmark mono">TCVN · EUROCODE · AASHTO</p>
+</footer>
+</body>
+</html>
